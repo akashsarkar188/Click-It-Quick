@@ -27,11 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private MaterialButton startStopGame;
     private Handler gameTimer;
     private Runnable runnable;
-    private boolean gameIsActive = false;
+    private boolean gameIsActive = false, didUserTap = false;
     private TextView scoreTextView;
     private int currentScore = 0;
     private long gameDelay = 1000;
-    private Integer[] colorIds = new Integer[]{R.color.red, R.color.green, R.color.yellow, R.color.blue, R.color.grey};
+    private Integer[] colorIds = new Integer[]{R.color.red, R.color.blue, R.color.yellow, R.color.green, R.color.grey};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private void startGame() {
 
         currentScore = 0;
+        didUserTap = true;
         scoreTextView.setText(String.valueOf(currentScore));
 
         if (gameTimer == null) {
@@ -55,8 +56,13 @@ public class MainActivity extends AppCompatActivity {
         gameTimer.postDelayed(runnable = new Runnable() {
             @Override
             public void run() {
-                setUpColorListAndDisplay();
-                gameTimer.postDelayed(runnable, gameDelay);
+                if (!didUserTap) {
+                    handleGameOver();
+                } else {
+                    didUserTap = false;
+                    setUpColorListAndDisplay();
+                    gameTimer.postDelayed(runnable, gameDelay);
+                }
             }
         }, gameDelay);
     }
@@ -64,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
     private void setUpColorListAndDisplay() {
         List<ColorsModel> updatedList = new ArrayList<>();
 
-        ArrayList<Integer> alreadyAddedPosition = new ArrayList<>();
         List<Integer> colorIds2 = new ArrayList<>();
         colorIds2.add(R.color.red);
         colorIds2.add(R.color.green);
@@ -74,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         int i = 0;
         int boundValue = 4;
 
-        while (true) {
+        /*while (true) {
             int randomInt = ThreadLocalRandom.current().nextInt(0, boundValue);
 
             updatedList.add(new ColorsModel(colorIds2.get(randomInt), false));
@@ -85,19 +90,22 @@ public class MainActivity extends AppCompatActivity {
             if (i == 4) {
                 break;
             }
-        }
+        }*/
 
-        int randomInt = ThreadLocalRandom.current().nextInt(0, 3);
-        updatedList.add(randomInt, new ColorsModel(colorIds[4], true));
+        updatedList.add(getColorModel(1));
+        updatedList.add(getColorModel(2));
+        updatedList.add(getColorModel(3));
+        updatedList.add(getColorModel(4));
 
-        if (updatedList.size() > 4) {
-            for (int o = 4; o < updatedList.size(); o++ ) {
+        int randomInt = ThreadLocalRandom.current().nextInt(0, 4);
+        updatedList.set(randomInt, getColorModel(5));
+
+        /*if (updatedList.size() > 4) {
+            for (int o = 4; o < updatedList.size(); o++) {
                 updatedList.remove(o);
             }
-        }
+        }*/
 
-        Log.e("XXX", "setUpColorListAndDisplay: " + updatedList.size());
-        Log.e("XXX", "setUpColorListAndDisplay: " + alreadyAddedPosition);
         if (startStopGame != null) {
             startStopGame.setText("Stop Game");
             gameIsActive = true;
@@ -108,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     private ColorsModel getColorModel(int position) {
         switch (position) {
             case 1:
-                return new ColorsModel(colorIds[4], true);
+                return new ColorsModel(colorIds[0], false);
             case 2:
                 return new ColorsModel(colorIds[1], false);
             case 3:
@@ -116,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             case 4:
                 return new ColorsModel(colorIds[3], false);
             default:
-                return new ColorsModel(colorIds[0], false);
+                return new ColorsModel(colorIds[4], true);
         }
     }
 
@@ -131,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void OnColorClicked(ColorsModel data) {
                 if (data.isGrey()) {
+                    didUserTap = true;
                     currentScore++;
                     scoreTextView.setText(String.valueOf(currentScore));
                 } else {
