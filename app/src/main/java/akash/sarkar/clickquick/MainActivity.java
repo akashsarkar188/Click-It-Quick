@@ -17,8 +17,6 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView scoreTextView;
     private int currentScore = 0;
     private long gameDelay = 1000;
-    private int[] colorIds = new int[]{R.color.red, R.color.green, R.color.yellow, R.color.blue, R.color.grey};
+    private Integer[] colorIds = new Integer[]{R.color.red, R.color.green, R.color.yellow, R.color.blue, R.color.grey};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,41 +58,46 @@ public class MainActivity extends AppCompatActivity {
                 setUpColorListAndDisplay();
                 gameTimer.postDelayed(runnable, gameDelay);
             }
-        },  gameDelay);
+        }, gameDelay);
     }
 
     private void setUpColorListAndDisplay() {
         List<ColorsModel> updatedList = new ArrayList<>();
 
         ArrayList<Integer> alreadyAddedPosition = new ArrayList<>();
+        List<Integer> colorIds2 = new ArrayList<>();
+        colorIds2.add(R.color.red);
+        colorIds2.add(R.color.green);
+        colorIds2.add(R.color.yellow);
+        colorIds2.add(R.color.blue);
 
-        for (int i = 0; i < 4; i++) {
-            int randomInt = ThreadLocalRandom.current().nextInt(1, 6);
-            if (randomInt > 0 && randomInt < 6) {
-                if (!alreadyAddedPosition.contains(randomInt)) {
-                    alreadyAddedPosition.add(randomInt);
-                    updatedList.add(getColorModel(randomInt));
-                } else {
+        int i = 0;
+        int boundValue = 4;
 
+        while (true) {
+            int randomInt = ThreadLocalRandom.current().nextInt(0, boundValue);
 
-                    for (int j = 0; j < 4; j++) {
-                        int randomInt2 = ThreadLocalRandom.current().nextInt(1, 6);
-                        if (randomInt2 > 0 && randomInt2 < 6) {
-                            if (!alreadyAddedPosition.contains(randomInt2)) {
-                                alreadyAddedPosition.add(randomInt2);
-                                updatedList.add(getColorModel(randomInt2));
-                                break;
-                            }
-                        }
-                    }
+            updatedList.add(new ColorsModel(colorIds2.get(randomInt), false));
+            colorIds2.remove(colorIds2.get(randomInt));
+            boundValue--;
 
-
-                }
+            i++;
+            if (i == 4) {
+                break;
             }
         }
 
-        Log.e("XXX", "setUpColorListAndDisplay: "  + updatedList.size());
-        Log.e("XXX", "setUpColorListAndDisplay: "  + alreadyAddedPosition);
+        int randomInt = ThreadLocalRandom.current().nextInt(0, 3);
+        updatedList.add(randomInt, new ColorsModel(colorIds[4], true));
+
+        if (updatedList.size() > 4) {
+            for (int o = 4; o < updatedList.size(); o++ ) {
+                updatedList.remove(o);
+            }
+        }
+
+        Log.e("XXX", "setUpColorListAndDisplay: " + updatedList.size());
+        Log.e("XXX", "setUpColorListAndDisplay: " + alreadyAddedPosition);
         if (startStopGame != null) {
             startStopGame.setText("Stop Game");
             gameIsActive = true;
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     private ColorsModel getColorModel(int position) {
         switch (position) {
             case 1:
-                return new ColorsModel(colorIds[0], false);
+                return new ColorsModel(colorIds[4], true);
             case 2:
                 return new ColorsModel(colorIds[1], false);
             case 3:
@@ -113,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             case 4:
                 return new ColorsModel(colorIds[3], false);
             default:
-                return new ColorsModel(colorIds[4], true);
+                return new ColorsModel(colorIds[0], false);
         }
     }
 
