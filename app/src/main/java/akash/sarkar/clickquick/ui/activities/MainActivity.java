@@ -1,11 +1,10 @@
-package akash.sarkar.clickquick;
+package akash.sarkar.clickquick.ui.activities;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,6 +17,10 @@ import com.google.android.material.button.MaterialButton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import akash.sarkar.clickquick.ColorsAdapter;
+import akash.sarkar.clickquick.ColorsModel;
+import akash.sarkar.clickquick.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().hide();
 
         initView();
         //startGame();
