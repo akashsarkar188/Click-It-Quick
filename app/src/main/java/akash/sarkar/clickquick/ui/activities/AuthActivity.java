@@ -16,8 +16,10 @@ import java.util.concurrent.Executors;
 import akash.sarkar.clickquick.R;
 import akash.sarkar.clickquick.databinding.ActivityAuthBinding;
 import akash.sarkar.clickquick.db.DbClient;
+import akash.sarkar.clickquick.db.DbHelper;
 import akash.sarkar.clickquick.db.dao.UserDao;
 import akash.sarkar.clickquick.db.entities.User;
+import akash.sarkar.clickquick.db.listeners.UserListener;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -25,8 +27,6 @@ public class AuthActivity extends AppCompatActivity {
     private Button continueBtn;
     private String username;
     private ActivityAuthBinding binding;
-    private Executor executor;
-    private UserDao userDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +44,7 @@ public class AuthActivity extends AppCompatActivity {
     private void initElements() {
         usernameEt = binding.usernameEt;
         continueBtn = binding.continueBtn;
-        executor = Executors.newSingleThreadExecutor();
-        userDao = DbClient.getInstance(this).getDatabase().userDao();
-        executor.execute(() -> {
-            if (userDao.getUser() != null) {
-                userDao.emptyUser();
-            }
-        });
+
     }
 
     private void initListeners() {
@@ -64,18 +58,19 @@ public class AuthActivity extends AppCompatActivity {
                 usernameEt.setError("Length must be more than 4");
                 return;
             }
-            RegisterUser();
+            DbHelper.getInstance(this).registerUser(username, new UserListener.onRegisterUserListener() {
+                @Override
+                public void onSuccess() {
+                    startActivity(new Intent(AuthActivity.this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    finishAffinity();
+                }
+
+                @Override
+                public void onFailure(String msg) {
+                    runOnUiThread(() -> Toast.makeText(AuthActivity.this, msg, Toast.LENGTH_SHORT).show());
+                }
+            });
         });
     }
 
-    private void RegisterUser() {
-        executor.execute(() -> {
-            if (userDao.registerUser(new User(username, 0)) > 0) {
-                startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                finishAffinity();
-            } else {
-                runOnUiThread(() -> Toast.makeText(this, "Something's went wrong.", Toast.LENGTH_SHORT).show());
-            }
-        });
-    }
 }

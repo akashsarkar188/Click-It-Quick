@@ -3,10 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/upjot/Projects/Android/Click-It-Quick/app/src/main/res/drawable/circular_bg.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/upjot/Projects/Android/Click-It-Quick/app/src/main/res/layout/activity_auth.xml" value="0.2" />
         <entry key="..\:/Users/upjot/Projects/Android/Click-It-Quick/app/src/main/res/layout/activity_level_selector.xml" value="0.25" />
         <entry key="..\:/Users/upjot/Projects/Android/Click-It-Quick/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/upjot/Projects/Android/Click-It-Quick/app/src/main/res/layout/activity_splash.xml" value="0.25" />
+        <entry key="..\:/Users/upjot/Projects/Android/Click-It-Quick/app/src/main/res/layout/fragment_rewar_giving.xml" value="0.25" />
         <entry key="..\:/Users/upjot/Projects/Android/Click-It-Quick/app/src/main/res/layout/item_level_selector.xml" value="0.4" />
       </map>
     </option>

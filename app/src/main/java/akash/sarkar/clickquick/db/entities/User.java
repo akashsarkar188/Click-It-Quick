@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "user")
 public class User {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "id")
-    public int userId;
+    public long userId;
 
     @ColumnInfo(name = "user_name")
     public String userName;
@@ -17,8 +17,9 @@ public class User {
     @ColumnInfo(name = "user_avatar")
     public int userAvatar;
 
-    public User(String userName, int userAvatar) {
+    public User(String userName, int userAvatar, long userId) {
         this.userName = userName;
         this.userAvatar = userAvatar;
+        this.userId = userId;
     }
 }
